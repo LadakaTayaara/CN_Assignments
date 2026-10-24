@@ -6,3 +6,8 @@
 *.exe
 *.o
 *.obj
+
+# Python cache
+__pycache__/
+*.py[cod]
+

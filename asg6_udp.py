@@ -4,7 +4,7 @@ import socket
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 # Server address
-server_address = ("localhost", 9998)
+server_address = ("127.0.0.1", 9998)
 
 print("UDP Client started...")
 

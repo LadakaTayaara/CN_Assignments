@@ -4,7 +4,7 @@ import socket
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 # Server address and port
-server_address = ("localhost", 9998)
+server_address = ("127.0.0.1", 9998)
 
 # Bind socket
 server_socket.bind(server_address)

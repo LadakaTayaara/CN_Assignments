@@ -1,99 +1,53 @@
-#include <bits/stdc++.h>
+#include <iostream>
 using namespace std;
 
-void printPath(int u, int v, const vector<vector<int>>& nexthop, const vector<vector<int>>& dist) {
-    if (dist[u][v] == -1) {
-        cout << "No path";
-        return;
-    }
-    
-    cout << u;
-    int curr = u;
-    while (curr != v) {
-        curr = nexthop[curr][v];
-        cout << " -> " << curr;
-    }
-}
-
-void solve(){
-    int n = 4;
-    vector<vector<int>> cost(n, vector<int>(n, 0));
-    vector<vector<int>> dist(n, vector<int>(n, 0));
-    vector<vector<int>> nexthop(n, vector<int>(n, 0));
-
-    cout << "Enter the cost matrix (use -1 for infinity/no direct link):\n";
-    for(int i = 0; i < n; i++){
-        for(int j = 0; j < n; j++){
-            cin >> cost[i][j];
-        }
-    }
-
-    cout << "\n";
-
-    for(int i = 0; i < n; i++){
-        for(int j = 0; j < n; j++){
-            dist[i][j] = cost[i][j];
-            if(i == j){
-                nexthop[i][j] = i;
-            }
-            else if(cost[i][j] != -1){
-                nexthop[i][j] = j;
-            }
-            else{
-                nexthop[i][j] = -1;
-            }
-        }
-    }
-
-    int updated = 1;
-    while(updated != 0){
-        updated = 0;
-        for(int i = 0; i < n; i++){
-            for(int j = 0; j < n; j++){
-                for(int k = 0; k < n; k++){
-                    if(dist[i][k] != -1 && dist[k][j] != -1){
-                        if(dist[i][j] == -1 || dist[i][j] > dist[i][k] + dist[k][j]){
-                            dist[i][j] = dist[i][k] + dist[k][j];
-                            nexthop[i][j] = nexthop[i][k];
-                            updated = 1;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    cout << "--- Final Distance Table ---\n";
-    for(int i = 0; i < n; i++){
-        for(int j = 0; j < n; j++){
-            cout << dist[i][j] << "\t";
-        }
-        cout << "\n";
-    }
-
-    cout << "\n";
-
-    cout << "--- Final Next-Hop Table ---\n";
-    for(int i = 0; i < n; i++){
-        for(int j = 0; j < n; j++){
-            cout << nexthop[i][j] << "\t";
-        }
-        cout << "\n";
-    }
-
-    cout << "\n";
-
-    cout << "--- Routing Paths Between All Routers ---\n";
-    for(int i = 0; i < n; i++){
-        for(int j = 0; j < n; j++){
-            cout << "Path from " << i << " to " << j << " (Cost: " << dist[i][j] << "): ";
-            printPath(i, j, nexthop, dist);
-            cout << "\n";
-        }
-    }
-}
-
 int main() {
-    solve();
-    return 0;
+  int n = 4;
+  int cost[10][10], dist[10][10], hop[10][10];
+
+  cout << "Enter the cost matrix (use -1 for infinity/no direct link):\n";
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+      cin >> cost[i][j];
+      dist[i][j] = (cost[i][j] == -1 && i != j) ? 999 : cost[i][j];
+      hop[i][j] = (cost[i][j] != -1) ? j : -1;
+    }
+  }
+
+  // Distance Vector Update
+  for (int k = 0; k < n; k++)
+    for (int i = 0; i < n; i++)
+      for (int j = 0; j < n; j++)
+        if (dist[i][k] + dist[k][j] < dist[i][j]) {
+          dist[i][j] = dist[i][k] + dist[k][j];
+          hop[i][j] = hop[i][k];
+        }
+
+  cout << "\n--- Final Distance Table ---\n";
+  for (int i = 0; i < n; i++, cout << "\n")
+    for (int j = 0; j < n; j++)
+      cout << dist[i][j] << "\t";
+
+  cout << "\n--- Final Next-Hop Table ---\n";
+  for (int i = 0; i < n; i++, cout << "\n")
+    for (int j = 0; j < n; j++)
+      cout << hop[i][j] << "\t";
+
+  cout << "\n--- Routing Paths Between All Routers ---\n";
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+      cout << "Path from " << i << " to " << j << " (Cost: " << dist[i][j]
+           << "): ";
+      if (dist[i][j] >= 999) {
+        cout << "No path\n";
+      } else {
+        cout << i;
+        for (int curr = i; curr != j; curr = hop[curr][j])
+          cout << " -> " << hop[curr][j];
+        cout << "\n";
+      }
+    }
+  }
+
+  return 0;
 }
