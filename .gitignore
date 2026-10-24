@@ -1,0 +1,8 @@
+# Editor & Tooling configurations
+.vscode/
+.clangd
+
+# Compiled binaries and object files
+*.exe
+*.o
+*.obj
